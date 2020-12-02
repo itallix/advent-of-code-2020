@@ -1,17 +1,18 @@
 import argparse
 
 import pytest
+import re
 
 
 def compute(s):
     total = 0
-    for line in s.splitlines():
-        values = line.split(" ")
-        count = values[0].split("-")
-        pos1 = int(count[0]) - 1
-        pos2 = int(count[1]) - 1
-        symbol = values[1][0]
-        if symbol == values[2][pos1] and symbol != values[2][pos2] or symbol != values[2][pos1] and symbol == values[2][pos2]:
+    parsed = [re.search("(\d+)-(\d+) ([a-z]{1}): ([a-z]*)", line) for line in s.splitlines()]
+    for p in parsed:
+        pos1 = int(p.group(1)) - 1
+        pos2 = int(p.group(2)) - 1
+        search = p.group(3)
+        pwd = p.group(4)
+        if search == pwd[pos1] and search != pwd[pos2] or search != pwd[pos1] and search == pwd[pos2]:
             total += 1
     return total
 
@@ -19,7 +20,9 @@ def compute(s):
 @pytest.mark.parametrize(
     ('input_s', 'expected'),
     (
-        # put given test cases here
+            ('1-3 a: abcde', 1),
+            ('1-3 b: cdefg', 0),
+            ('2-9 c: ccccccccc', 0)
     ),
 )
 def test(input_s, expected):
