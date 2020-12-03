@@ -1,18 +1,19 @@
 import argparse
+import re
 
 import pytest
-import re
 
 
 def compute(s):
     total = 0
-    parsed = [re.search("(\d+)-(\d+) ([a-z]{1}): ([a-z]*)", line) for line in s.splitlines()]
+    parsed = [re.search("(\\d+)-(\\d+) ([a-z]+): ([a-z]*)", line) for line in s.splitlines()]
     for p in parsed:
-        pos1 = int(p.group(1)) - 1
-        pos2 = int(p.group(2)) - 1
-        search = p.group(3)
-        pwd = p.group(4)
-        if search == pwd[pos1] and search != pwd[pos2] or search != pwd[pos1] and search == pwd[pos2]:
+        (pos1, pos2, search, pwd) = (int(p.group(1)) - 1, int(p.group(2)) - 1, p.group(3), p.group(4))
+
+        def matches(pos):
+            return search == pwd[pos]
+
+        if (matches(pos1)) ^ (matches(pos2)):
             total += 1
     return total
 

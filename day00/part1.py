@@ -1,24 +1,17 @@
 import argparse
 
 import pytest
-import re
 
 
 def compute(s):
-    total = 0
-    parsed = [re.search("(\\d+)-(\\d+) ([a-z]+): ([a-z]*)", line) for line in s.splitlines()]
-    for p in parsed:
-        (mn, mx, search, pwd) = (int(p.group(1)), int(p.group(2)), p.group(3), p.group(4))
-        if mn <= pwd.count(search) <= mx:
-            total += 1
-    return total
+    # TODO: implement solution here!
+    return 0
 
 
 @pytest.mark.parametrize(
     ('input_s', 'expected'),
     (
-        ('1-3 a: abcde\n1-3 b: cdefg\n2-9 c: ccccccccc', 2),
-        ('1-3 g: abcde\n1-3 b: cdefg\n2-9 c: ccccccccc', 1)
+        # put given test cases here
     ),
 )
 def test(input_s, expected):

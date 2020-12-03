@@ -1,7 +1,6 @@
 import argparse
 
 import pytest
-import itertools
 
 
 def compute(s):
@@ -16,7 +15,11 @@ def compute(s):
 @pytest.mark.parametrize(
     ('input_s', 'expected'),
     (
-        # put given test cases here
+        ('1000\n1020\n10', 1020000),
+        ('100\n1920\n20', 192000),
+        ('1010\n2019\n1', 2019),
+        ('1010\n1010', 1020100),
+        ('1010', None),
     ),
 )
 def test(input_s, expected):

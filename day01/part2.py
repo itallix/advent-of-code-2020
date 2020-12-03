@@ -16,7 +16,7 @@ def compute(s):
 @pytest.mark.parametrize(
     ('input_s', 'expected'),
     (
-        # put given test cases here
+        ('1000\n1000\n20', 20_000_000),
     ),
 )
 def test(input_s, expected):
