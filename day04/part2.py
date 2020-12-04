@@ -1,20 +1,20 @@
 import argparse
+import re
 
 import pytest
-import re
+from support import timing
 
 
 class Rule:
-    def __init__(self, regex, with_range, mn=None, mx=None):
+    def __init__(self, regex, mn=None, mx=None):
         self.regex = regex
-        self.with_range = with_range
         self.min = mn
         self.max = mx
 
     def is_valid(self, test_value):
         match = re.match(self.regex, test_value)
         if match:
-            if not self.with_range:
+            if not match.groups():
                 return True
             return self.min <= int(match.group(1)) <= self.max
 
@@ -22,13 +22,13 @@ class Rule:
 
 
 required = {
-               "byr": [Rule("^(\\d{4})$", True, 1920, 2002)],
-               "iyr": [Rule("^(\\d{4})$", True, 2010, 2020)],
-               "eyr": [Rule("^(\\d{4})$", True, 2020, 2030)],
-               "hgt": [Rule("^(\\d{3})cm$", True, 150, 193), Rule("^(\\d{2})in$", True, 59, 76)],
-               "hcl": [Rule("^#[0-9a-f]{6}$", False)],
-               "ecl": [Rule("^amb|blu|brn|gry|grn|hzl|oth$", False)],
-               "pid": [Rule("^\\d{9}$", False)]
+    "byr": [Rule("^(\\d{4})$", 1920, 2002)],
+    "iyr": [Rule("^(\\d{4})$", 2010, 2020)],
+    "eyr": [Rule("^(\\d{4})$", 2020, 2030)],
+    "hgt": [Rule("^(\\d{3})cm$", 150, 193), Rule("^(\\d{2})in$", 59, 76)],
+    "hcl": [Rule("^#[0-9a-f]{6}$")],
+    "ecl": [Rule("^amb|blu|brn|gry|grn|hzl|oth$")],
+    "pid": [Rule("^\\d{9}$")]
 }
 
 
@@ -69,7 +69,7 @@ pid:545766238 ecl:hzl
 eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719\n\n""", 4),
-    ("""eyr:1972 cid:100
+            ("""eyr:1972 cid:100
 hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
 
 iyr:2019
@@ -93,7 +93,7 @@ def main():
     parser.add_argument('data_file')
     args = parser.parse_args()
 
-    with open(args.data_file) as f:
+    with open(args.data_file) as f, timing():
         print(compute(f.read()))
 
     return 0

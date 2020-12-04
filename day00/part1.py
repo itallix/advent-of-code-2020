@@ -1,6 +1,7 @@
 import argparse
 
 import pytest
+from support import timing
 
 
 def compute(s):
@@ -23,7 +24,7 @@ def main():
     parser.add_argument('data_file')
     args = parser.parse_args()
 
-    with open(args.data_file) as f:
+    with open(args.data_file) as f, timing():
         print(compute(f.read()))
 
     return 0

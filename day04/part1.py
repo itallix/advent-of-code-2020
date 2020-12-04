@@ -1,6 +1,7 @@
 import argparse
 
 import pytest
+from support import timing
 
 
 def compute(s):
@@ -10,8 +11,14 @@ def compute(s):
         current = set([f.split(":")[0] for f in line.split()])
         if current - {"cid"} == required:
             total += 1
-
     return total
+
+
+def fcompute(s):
+    required = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"}
+    return len(list(filter(lambda x: x is True,
+                           [set([f.split(":")[0] for f in line.split()]) - {"cid"} == required
+                            for line in s.split("\n\n")])))
 
 
 @pytest.mark.parametrize(
@@ -41,7 +48,7 @@ def main():
     parser.add_argument('data_file')
     args = parser.parse_args()
 
-    with open(args.data_file) as f:
+    with open(args.data_file) as f, timing():
         print(compute(f.read()))
 
     return 0
