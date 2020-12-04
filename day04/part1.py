@@ -15,6 +15,7 @@ def compute(s):
 
 
 def fcompute(s):
+    # bonus implementation with for comprehensions
     required = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"}
     return len(list(filter(lambda x: x is True,
                            [set([f.split(":")[0] for f in line.split()]) - {"cid"} == required

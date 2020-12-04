@@ -54,6 +54,16 @@ def compute(s):
     return total
 
 
+def fcompute(s):
+    # bonus implementation with for comprehensions
+    passports = [{k: v for k, v in [f.split(":") for f in pdata.split()] if k != "cid"} for pdata in s.split("\n\n")]
+
+    return len(list(filter(lambda x: x is True, [all([True in [rule.is_valid(passport.get(key))
+                                                               for rule in required.get(key)]
+                                                      for key in passport.keys()])
+                                                 for passport in passports if passport.keys() == required.keys()])))
+
+
 @pytest.mark.parametrize(
     ('input_s', 'expected'),
     (
