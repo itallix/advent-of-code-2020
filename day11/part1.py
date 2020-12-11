@@ -6,7 +6,7 @@ import copy
 
 
 def compute(s):
-    seat_layout = [line for line in s.splitlines()]
+    seat_layout = [list(line) for line in s.splitlines()]
 
     def get_neighbours(matrix, rn, cn):
         neighbours = []
@@ -18,31 +18,30 @@ def compute(s):
                     neighbours.append(matrix[rn + i][cn + j])
         return neighbours
 
-    def visit_seat(i, j, func):
-        s = seat_layout[i][j]
+    def visit_seat(layout, i, j, func):
+        s = layout[i][j]
         if s == 'L':
-            ns = func(seat_layout, i, j)
+            ns = func(layout, i, j)
             if all(x != '#' for x in ns):
                 return '#', True
         elif s == '#':
-            ns = func(seat_layout, i, j)
+            ns = func(layout, i, j)
             if len(list(filter(lambda x: x == '#', ns))) >= 4:
                 return 'L', True
         return s, False
 
-    updated_layout = []
-    while True:
-        updated_layout.clear()
+    def arrange_seats(layout):
+        original = copy.deepcopy(layout)
         changed = False
-        for i in range(0, len(seat_layout)):
-            updated_layout.append([])
-            for j in range(0, len(seat_layout[i])):
-                updated = visit_seat(i, j, get_neighbours)
+        for i in range(0, len(layout)):
+            for j in range(0, len(layout[i])):
+                updated = visit_seat(original, i, j, get_neighbours)
                 changed = changed or updated[1]
-                updated_layout[i].append(updated[0])
-        seat_layout = copy.deepcopy(updated_layout)
-        if not changed:
-            break
+                layout[i][j] = updated[0]
+        if changed:
+            arrange_seats(layout)
+
+    arrange_seats(seat_layout)
 
     return [c for r in seat_layout for c in r].count('#')
 
