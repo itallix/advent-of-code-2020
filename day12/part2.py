@@ -10,32 +10,32 @@ import re
 class Navigation:
     x: int
     y: int
-    w: ()
+    w_x: int
+    w_y: int
 
     def left(self, n):
         for i in range(n // 90):
-            self.w = (-self.w[1], self.w[0])
+            (self.w_x, self.w_y) = (-self.w_y, self.w_x)
 
     def right(self, n):
         for i in range(n // 90):
-            self.w = (self.w[1], -self.w[0])
+            (self.w_x, self.w_y) = (self.w_y, -self.w_x)
 
     def forward(self, n):
-        (x, y) = self.w
-        self.x += n * x
-        self.y += n * y
+        self.x += n * self.w_x
+        self.y += n * self.w_y
 
     def east(self, n):
-        self.w = (self.w[0] + n, self.w[1])
+        self.w_x += n
 
     def west(self, n):
-        self.w = (self.w[0] - n, self.w[1])
+        self.w_x -= n
 
     def north(self, n):
-        self.w = (self.w[0], self.w[1] + n)
+        self.w_y += n
 
     def south(self, n):
-        self.w = (self.w[0], self.w[1] - n)
+        self.w_y -= n
 
     def dist(self):
         return abs(self.x) + abs(self.y)
@@ -44,7 +44,7 @@ class Navigation:
 def compute(s):
     instructions = [re.match("(\\A.)(\\d*)", line).groups() for line in s.splitlines()]
     moves = {'F': 'forward', 'S': 'south', 'N': 'north', 'L': 'left', 'R': 'right', 'W': 'west', 'E': 'east'}
-    current = Navigation(0, 0, (10, 1))
+    current = Navigation(0, 0, 10, 1)
     [getattr(current, moves[ins[0]])(int(ins[1])) for ins in instructions]
     return current.dist()
 
