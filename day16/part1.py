@@ -11,7 +11,7 @@ def compute(s):
     nearby_tickets = [ticket.split(",") for ticket in nearby_tickets_raw.splitlines()[1:]]
     error_rate = 0
     for ticket in nearby_tickets:
-        for idx, n in enumerate(ticket):
+        for n in ticket:
             i_n = int(n)
             if all([not int(l1) <= i_n <= int(u1) and not int(l2) <= i_n <= int(u2) for (l1, u1, l2, u2) in rules]):
                 error_rate += i_n
