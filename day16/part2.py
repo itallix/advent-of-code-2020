@@ -7,13 +7,15 @@ import math
 
 
 def get_valid_tickets(nearby_tickets, rules):
-    invalid_tickets = []
-    for ticket in nearby_tickets:
-        for idx, n in enumerate(ticket):
+    def is_valid(ticket):
+        for n in ticket:
             i_n = int(n)
             if all([not int(l1) <= i_n <= int(u1) and not int(l2) <= i_n <= int(u2) for (_, l1, u1, l2, u2) in rules]):
-                invalid_tickets.append(ticket)
-    return [t for t in nearby_tickets if invalid_tickets.count(t) == 0]
+                return False
+        return True
+
+    valid_tickets = filter(is_valid, nearby_tickets)
+    return list(valid_tickets)
 
 
 def compute(s):
@@ -36,9 +38,7 @@ def compute(s):
     (ticket_fields, field_order) = [], []
     for match in sorted(matches, key=len):
         field_order.append(matches.index(match))
-        for m in match:
-            if m not in ticket_fields:
-                ticket_fields.append(m)
+        ticket_fields.extend([m for m in match if m not in ticket_fields])
 
     departure_idx = [v for k, v in enumerate(field_order) if "departure" in ticket_fields[k]]
     return math.prod([my_ticket[i] for i in departure_idx])
