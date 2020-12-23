@@ -14,8 +14,7 @@ def get_valid_tickets(nearby_tickets, rules):
                 return False
         return True
 
-    valid_tickets = filter(is_valid, nearby_tickets)
-    return list(valid_tickets)
+    return list(filter(is_valid, nearby_tickets))
 
 
 def compute(s):
